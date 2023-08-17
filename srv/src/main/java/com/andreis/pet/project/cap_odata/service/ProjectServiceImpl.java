@@ -1,4 +1,4 @@
-package customer.cap_odata.service;
+package com.andreis.pet.project.cap_odata.service;
 
 import cds.gen.com.andreis.pet.project.capodata.Projects;
 import cds.gen.com.andreis.pet.project.capodata.Projects_;
@@ -19,13 +19,13 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public List<Projects> getProjects(Integer employeeId) {
+    public List<Projects> getProjects(String employeeId) {
         return persistenceService
                 .run(
                         Select.from(Projects_.class)
                                 .where(
                                         project ->
-                                                project.employees().employee_id()
+                                                project.employees().employee_ID()
                                                         .eq(employeeId)))
                 .listOf(Projects.class);
     }

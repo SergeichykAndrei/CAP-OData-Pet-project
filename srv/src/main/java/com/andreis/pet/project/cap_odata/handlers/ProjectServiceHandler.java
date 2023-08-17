@@ -1,13 +1,13 @@
-package customer.cap_odata.handlers;
+package com.andreis.pet.project.cap_odata.handlers;
 
 import cds.gen.com.andreis.pet.project.capodata.Projects;
 import cds.gen.projectservice.GetProjectsContext;
 import cds.gen.projectservice.ProjectDto;
 import cds.gen.projectservice.ProjectService_;
+import com.andreis.pet.project.cap_odata.service.ProjectService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
-import customer.cap_odata.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

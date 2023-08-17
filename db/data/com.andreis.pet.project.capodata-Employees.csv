@@ -1,5 +1,5 @@
-id,name
-1,Andrei
-2,Stas
-3,Marharita
-4,Kristina
+id,name,createdAt,createdBy,modifiedAt,modifiedBy
+81e477a6-34a6-49e2-bf61-7ff75c2010b1,Andrei,2023-07-19T12:00:00Z,User_1,2023-07-19T12:00:00Z,User_1
+82e477a6-34a6-49e2-bf61-7ff75c2010b1,Stas,2023-07-19T12:00:00Z,User_1,2023-07-19T12:00:00Z,User_1
+83e477a6-34a6-49e2-bf61-7ff75c2010b1,Marharita,2023-07-19T12:00:00Z,User_1,2023-07-19T12:00:00Z,User_1
+84e477a6-34a6-49e2-bf61-7ff75c2010b1,Kristina,2023-07-19T12:00:00Z,User_1,2023-07-19T12:00:00Z,User_1
