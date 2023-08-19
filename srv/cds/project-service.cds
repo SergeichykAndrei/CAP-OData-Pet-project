@@ -20,10 +20,5 @@ service ProjectService @(requires: 'any') {
         name: String;
     }
 
-    annotate getProjects with @restrict : [
-        {
-            grant : 'READ',
-            to : 'authenticated-user'
-        }
-    ];
+    annotate getProjects with @(requires: 'authenticated-user');
 }

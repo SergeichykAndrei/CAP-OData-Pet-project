@@ -43,6 +43,14 @@
 		</dependency>
 		<dependency>
 			<groupId>com.sap.cds</groupId>
+			<artifactId>cds-feature-hana</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.cds</groupId>
+			<artifactId>cds-adapter-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.cds</groupId>
 			<artifactId>cds-starter-cloudfoundry</artifactId>
 		</dependency>
 		<dependency>

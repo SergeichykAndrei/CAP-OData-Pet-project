@@ -1,5 +1,12 @@
 {
     "build": {
-        "target": "."
+        "target": ".",
+        "tasks": [
+            {"src":"db","for":"hana","options":{"model":["db","srv"]}},
+            {"src":"srv","for":"java-cf","options":{"model":["db","srv"]}}
+        ]
+    },
+    "hana": {
+        "deploy-format": "hdbtable"
     }
 }

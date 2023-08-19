@@ -1,7 +1,6 @@
 ---
 spring:
-  config.activate.on-profile: default
-  sql.init.platform: h2
+  config.activate.on-profile: cloud
 cds:
-  datasource.auto-config.enabled: false
-  sql.supportedLocales: "*"
+#  datasource:
+#    auto-config.enabled: false
