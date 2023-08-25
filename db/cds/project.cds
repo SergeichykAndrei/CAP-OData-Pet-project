@@ -6,5 +6,6 @@ using com.andreis.pet.project.capodata.EmployeesProjects from './employee_projec
 @assert.unique: {projectName: [name]}
 entity Projects : cuid, managed {
     name  : String(50) @mandatory;
+    discription : String(50);
     employees : association to many EmployeesProjects on employees.project = $self;
 }
