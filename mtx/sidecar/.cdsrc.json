@@ -1,0 +1,27 @@
+{
+  "hana": {
+    "deploy-format": "hdbtable"
+  },
+  "build": {
+    "tasks": [
+      {
+        "for": "hana"
+      },
+      {
+        "for": "java-cf"
+      }
+    ]
+  },
+  "odata": {
+    "version": "v4"
+  },
+  "requires": {
+    "db": {
+      "kind": "hana-mt"
+    },
+    "auth": {
+      "kind": "xsuaa"
+    },
+    "multitenancy": true
+  }
+}

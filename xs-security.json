@@ -1,6 +1,6 @@
 {
-  "xsappname": "srv-api",
-  "tenant-mode": "dedicated",
+  "xsappname": "cap-odata-auth",
+  "tenant-mode": "shared",
   "scopes": [
     {
       "name": "$XSAPPNAME.Display",
@@ -11,11 +11,15 @@
       "description": "With this scope, USER can read products."
     },
     {
-      "name": "$XSAPPNAME.Callback",
-      "description": "With this scope set, the callbacks for tenant onboarding, offboarding and getDependencies can be called.",
+      "name": "$XSAPPNAME.mtcallback",
+      "description": "Multi Tenancy Callback Access",
       "grant-as-authority-to-apps": [
-        "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
+        "$XSAPPNAME(application, sap-provisioning, tenant-onboarding)"
       ]
+    },
+    {
+      "name": "$XSAPPNAME.mtdeployment",
+      "description": "Scope to trigger a re-deployment of the database artifacts"
     }
   ],
   "role-templates": [
@@ -26,6 +30,9 @@
         "$XSAPPNAME.Display"
       ]
     }
+  ],
+  "authorities": [
+    "$XSAPPNAME.mtdeployment"
   ],
 
   "oauth2-configuration": {

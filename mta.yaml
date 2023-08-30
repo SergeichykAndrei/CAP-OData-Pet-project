@@ -14,6 +14,7 @@ modules:
       SPRING_PROFILES_ACTIVE: cloud
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jre.SAPMachineJRE']"
       JBP_CONFIG_SAP_MACHINE_JRE: '{ use_offline_repository: false, version: 17.+ }'
+      CDS_MULTITENANCY_APPUI_TENANTSEPARATOR: "-"
     build-parameters:
       builder: custom
       commands:
@@ -25,24 +26,19 @@ modules:
           srv-url: ${default-url}
     requires:
       - name: cap-odata-auth
-      - name: cap-odata-hdi-container
+      - name: service-manager
       - name: app-api
         properties:
           CDS_MULTITENANCY_APPUI_URL: ~{url}
+      - name: cf-logging
+      - name: mtx-api
+        properties:
+          CDS_MULTITENANCY_SIDECAR_URL: ~{mtx-url}
+      - name: saas-registry
 
-  - name: cap-odata-db-deployer
-    type: hdb
-    path: db
-    parameters:
-      buildpack: nodejs_buildpack
-    build-parameters:
-      builder: custom
-      commands:
-        - npm run build
-    requires:
-      - name: cap-odata-hdi-container
-
-  - name: cap-odata
+# --------------------- APPROUTER MODULE ---------------------
+  - name: approuter
+# ------------------------------------------------------------
     type: approuter.nodejs
     path: app/ # from cds.env.folders. Consider also cds.env.build.target -> gen/app
     parameters:
@@ -61,8 +57,37 @@ modules:
       - name: app-api
         properties:
           url: ${default-url}
+          app-domain: '${domain}'
+    properties:
+      TENANT_HOST_PATTERN: "^(.*)-${default-uri}"
 
+# --------------------- SIDECAR MODULE -----------------------
+  - name: cap-odata-mtx
+# ------------------------------------------------------------
+    type: nodejs
+    path: mtx/sidecar
+    build-parameters:
+      builder: custom
+      build-result: gen
+      commands:
+        - npm run build
+      requires:
+        - name: cap-odata-srv
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+    provides:
+      - name: mtx-api
+        properties:
+          mtx-url: ${default-url}
+    requires:
+      - name: service-manager
+      - name: cap-odata-auth
+      - name: cf-logging
+
+# --------------------- RESOURCES ---------------------
 resources:
+# -----------------------------------------------------
   - name: cap-odata-auth
     type: org.cloudfoundry.managed-service
     parameters:
@@ -71,14 +96,38 @@ resources:
       path: ./xs-security.json
       config:
         xsappname: cap-odata-${org}-${space}
-        tenant-mode: dedicated
-  - name: cap-odata-hdi-container
-    type: com.sap.xs.hdi-container
+        oauth2-configuration:
+          redirect-uris:
+            - https://*.~{app-api/app-domain}/**
+    requires:
+      - name: app-api
+  - name: service-manager
+    type: org.cloudfoundry.managed-service
     parameters:
-      service: hana
-      service-plan: hdi-shared
-      properties:
-        hdi-container-name: ${service-name}
+      service: service-manager
+      service-plan: container
+  - name: saas-registry
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: saas-registry
+      service-plan: application
       config:
-        database-id: aa19983f-8c05-4852-b603-e77e0736f304
-        schema: PUBLIC
+        appName: cap-odata-${org}-${space}
+        xsappname: cap-odata-${org}-${space}
+        appUrls:
+          getDependencies: ~{srv-api/srv-url}/mt/v1.0/subscriptions/dependencies
+          onSubscription: ~{srv-api/srv-url}/mt/v1.0/subscriptions/tenants/{tenantId}
+          onSubscriptionAsync: true
+          onUnSubscriptionAsync: true
+          onUpdateDependenciesAsync: true
+          callbackTimeoutMillis: 300000 # Increase if your deployments are taking longer than that
+        displayName: cap-odata
+        description: A simple CAP project.
+        category: 'Category'
+    requires:
+      - name: srv-api
+  - name: cf-logging
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: application-logs
+      service-plan: lite

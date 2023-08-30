@@ -2,11 +2,55 @@
     "build": {
         "target": ".",
         "tasks": [
-            {"src":"db","for":"hana","options":{"model":["db","srv"]}},
-            {"src":"srv","for":"java-cf","options":{"model":["db","srv"]}}
+            {
+                "src": "db",
+                "for": "hana",
+                "options": {
+                    "model": [
+                        "db",
+                        "srv"
+                    ]
+                }
+            },
+            {
+                "src": "srv",
+                "for": "java-cf",
+                "options": {
+                    "model": [
+                        "db",
+                        "srv"
+                    ]
+                }
+            },
+            {
+                "for": "java-cf"
+            },
+            {
+                "for": "mtx",
+                "src": ".",
+                "dest": "mtx-sidecar"
+            },
+            {
+                "for": "hana"
+            }
         ]
     },
     "hana": {
         "deploy-format": "hdbtable"
-    }
+    },
+    "requires": {
+        "db": {
+            "kind": "hana-mt"
+        },
+        "[production]": {
+            "multitenancy": true
+        }
+    },
+    "odata": {
+        "version": "v4"
+    },
+    "profiles": [
+        "with-mtx-sidecar",
+        "java"
+    ]
 }

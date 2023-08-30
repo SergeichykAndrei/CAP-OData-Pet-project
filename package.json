@@ -5,9 +5,18 @@
   "license": "ISC",
   "repository": "<Add your repository here>",
   "dependencies": {
-    "@sap/cds-hana": "^2.0.0"
+    "@sap/cds": "^7.1.2",
+    "@sap/cds-hana": "^2.0.0",
+    "@sap/cds-mtxs": "^1.10.0",
+    "@sap/xssec": "^3.3.3",
+    "express": "^4.18.2",
+    "hdb": "^0.19.5",
+    "passport": "^0.6.0"
   },
   "devDependencies": {
     "@sap/cds-dk": "^7"
-  }
+  },
+  "workspaces": [
+    "mtx/sidecar"
+  ]
 }
