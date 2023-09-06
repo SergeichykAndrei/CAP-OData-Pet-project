@@ -8,7 +8,6 @@ using com.andreis.pet.project.capodata.Employees from './employee';
 entity Reports : cuid, managed {
     project: Association to Projects @mandatory @assert.target;
     employee: Association to Employees @mandatory @assert.target;
-    description: String;
 }
 
 annotate Reports with

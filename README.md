@@ -25,3 +25,60 @@ To deploy the app in the Cloud Foundry environment, follow these steps:
 1. Build the jar file: `mvn clean package -DskipTests`
 2. Build tar archive: `mbt build -t gen --mtar mta.tar`
 3. Deploy app: `cf deploy gen/mta.tar `
+
+
+### Multi-tenancy
+
+- The SaaS Provisioning Service sends a subscribe event to the CAP application.
+- The CAP application delegates the request to the MTX services.
+- The MTX services use Service Manager to create the database tenant.
+- The CAP Application connects to this tenant at runtime using Service Manager.
+
+## To enable multitenancy on SAP BTP, three services are involved:
+
+- XSUAA (xsuaa)
+- Service Manager (service-manager)
+- SaaS Provisioning service (saas-registry)
+Only when these services are bound to your application, the multitenancy feature is turned on.
+
+## Enable Multitenancy
+- add MTX Sidecar application:
+`cds add multitenancy --for production`
+- delete hdi-container service and db-deployer module if previously you used them in non-multitenant configuration.
+- you can delete from MTX Sidecar module next line:
+`SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}-~{app-uri}`
+- in package.json of mtx/sidecar folder I changed line from:
+`"build": "cds build ../.. --for mtx-sidecar --production && npm ci --prefix gen"`
+to
+`"build": "cds build ../.. --for mtx-sidecar --production && npm install --prefix gen"`
+- add next configuration in your xs-security.json file:
+`{
+  "xsappname": "cap-odata-auth",
+  "tenant-mode": "shared",
+  "scopes": [
+  {
+  "name": "$XSAPPNAME.mtcallback",
+  "description": "Multi Tenancy Callback Access",
+  "grant-as-authority-to-apps": [
+  "$XSAPPNAME(application, sap-provisioning, tenant-onboarding)"
+  ]
+  },
+  {
+  "name": "$XSAPPNAME.mtdeployment",
+  "description": "Scope to trigger a re-deployment of the database artifacts"
+  }
+  ],
+  "authorities": [
+  "$XSAPPNAME.mtdeployment"
+  ]}`
+- add Service Manager service :
+`  - name: service-manager
+  type: org.cloudfoundry.managed-service
+  parameters:
+  service: service-manager
+  service-plan:
+  container`
+- add service-manager service in required properties of main application and MTX Sidecar module 
+
+## Install Dependencies
+`npm i`
