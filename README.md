@@ -44,6 +44,7 @@ Only when these services are bound to your application, the multitenancy feature
 ## Enable Multitenancy
 - add MTX Sidecar application:
 `cds add multitenancy --for production`
+- add(bind) created mtx-sidecar container with your xsuaa service. 
 - delete hdi-container service and db-deployer module if previously you used them in non-multitenant configuration.
 - you can delete from MTX Sidecar module next line:
 `SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}-~{app-uri}`
